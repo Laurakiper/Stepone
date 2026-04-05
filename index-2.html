@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step one — by Lau Navarro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blanco: #F9F6F1;
+    --cobre: #C4622D;
+    --cobre-oscuro: #9E4820;
+    --cobre-claro: #E8866A;
+    --cobre-palido: #F5E6DE;
+    --negro: #1A1208;
+    --gris: #8A7A6E;
+    --gris-claro: #E8E0D6;
+    --linea: #D4C4B4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    background: var(--blanco);
+    color: var(--negro);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--linea);
+    background: var(--blanco);
+  }
+
+  .logo {
+    font-size: 26px; font-weight: 700; color: var(--negro);
+    letter-spacing: -0.5px;
+  }
+
+  .logo em { color: var(--cobre); font-style: normal; }
+  .nav-by { font-size: 12px; color: var(--gris); letter-spacing: 0.3px; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 120px 48px 60px;
+    border-bottom: 1px solid var(--linea);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-name {
+    font-size: clamp(60px, 12vw, 140px);
+    font-weight: 700;
+    color: var(--cobre);
+    line-height: 0.9;
+    letter-spacing: -3px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: aparece 0.7s ease forwards 0.1s;
+  }
+
+  .hero-by {
+    font-size: 12px;
+    color: var(--gris);
+    letter-spacing: 2px;
+    margin-top: 20px;
+    opacity: 0;
+    animation: aparece 0.7s ease forwards 0.3s;
+  }
+
+  h1 {
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 700;
+    line-height: 1.0;
+    color: var(--negro);
+    margin-bottom: 0;
+    letter-spacing: -1px;
+    opacity: 0;
+    animation: aparece 0.7s ease forwards 0.2s;
+  }
+
+  h1 .cobre { color: var(--cobre); }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    padding-top: 48px;
+    border-top: 1px solid var(--linea);
+    opacity: 0;
+    animation: aparece 0.7s ease forwards 0.4s;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--gris);
+    max-width: 440px;
+  }
+
+  .hero-desc strong { color: var(--negro); font-weight: 700; }
+
+  .btn-cta {
+    display: inline-block;
+    background: var(--cobre);
+    color: var(--blanco);
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 14px 28px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .btn-cta:hover { background: var(--cobre-oscuro); transform: translateY(-1px); }
+
+  .hero-deco {
+    position: absolute;
+    right: 48px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 200px;
+    color: var(--cobre-palido);
+    font-weight: 700;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+    opacity: 0;
+    animation: aparece 1s ease forwards 0.5s;
+  }
+
+  /* SECCIÓN ETAPAS */
+  .etapas {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .sec-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 52px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .sec-label {
+    font-size: 11px;
+    color: var(--cobre);
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--negro);
+    letter-spacing: -0.5px;
+  }
+
+  .sec-sub {
+    font-size: 14px;
+    color: var(--gris);
+    line-height: 1.65;
+    max-width: 320px;
+    padding-top: 4px;
+  }
+
+  /* GRID 6 AGENTES — 3 columnas */
+  .etapas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--linea);
+  }
+
+  .etapa-btn {
+    background: var(--blanco);
+    border: none;
+    border-right: 1px solid var(--linea);
+    border-bottom: 1px solid var(--linea);
+    padding: 32px 28px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  /* Quitar borde derecho de última columna */
+  .etapa-btn:nth-child(3n) { border-right: none; }
+  /* Quitar borde inferior de última fila */
+  .etapa-btn:nth-child(4),
+  .etapa-btn:nth-child(5),
+  .etapa-btn:nth-child(6) { border-bottom: none; }
+
+  .etapa-btn:hover { background: var(--cobre-palido); }
+  .etapa-btn.activo { background: var(--cobre-palido); border-left: 3px solid var(--cobre); }
+
+  .etapa-num {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--cobre);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  .etapa-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--negro);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .etapa-desc {
+    font-size: 12px;
+    color: var(--gris);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 20px;
+  }
+
+  .etapa-flecha {
+    font-size: 18px;
+    color: var(--cobre);
+    transition: transform 0.2s;
+  }
+
+  .etapa-btn:hover .etapa-flecha { transform: translateX(6px); }
+
+  /* CHAT */
+  .chat-section {
+    display: none;
+    padding: 72px 48px;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .chat-section.visible { display: block; }
+
+  .chat-inner { max-width: 760px; margin: 0 auto; }
+
+  .chat-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+    margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--linea);
+  }
+
+  .chat-titulo {
+    font-size: 22px; font-weight: 700; color: var(--negro);
+    margin-bottom: 6px; line-height: 1.2;
+  }
+
+  .chat-subtitulo {
+    font-size: 13px; color: var(--gris); line-height: 1.5;
+    max-width: 460px;
+  }
+
+  .btn-volver {
+    background: transparent;
+    border: 1px solid var(--linea);
+    padding: 9px 16px;
+    font-size: 12px;
+    color: var(--gris);
+    font-family: 'Courier Prime', monospace;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-volver:hover { border-color: var(--cobre); color: var(--cobre); }
+
+  /* MENSAJES */
+  .mensajes {
+    display: flex; flex-direction: column; gap: 18px;
+    margin-bottom: 24px; min-height: 160px;
+  }
+
+  .msg { display: flex; gap: 14px; align-items: flex-start; animation: aparece 0.3s ease; }
+  .msg.usuario { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+    font-family: 'Courier Prime', monospace;
+    letter-spacing: 0.5px;
+    border: 1px solid var(--linea);
+  }
+
+  .avatar.lau { background: var(--cobre); color: var(--blanco); border-color: var(--cobre); }
+  .avatar.usuario { background: var(--blanco); color: var(--gris); }
+
+  .burbuja {
+    max-width: 78%; padding: 14px 18px;
+    font-size: 14px; line-height: 1.7;
+  }
+
+  .msg.lau .burbuja {
+    background: var(--cobre-palido);
+    color: var(--negro);
+    border: 1px solid var(--linea);
+  }
+
+  .msg.usuario .burbuja {
+    background: var(--negro);
+    color: var(--blanco);
+  }
+
+  .burbuja p { margin-bottom: 8px; }
+  .burbuja p:last-child { margin-bottom: 0; }
+  .burbuja strong { font-weight: 700; }
+  .burbuja ul, .burbuja ol { padding-left: 18px; margin: 8px 0; }
+  .burbuja li { margin-bottom: 4px; }
+
+  .typing {
+    display: flex; gap: 5px; align-items: center;
+    padding: 14px 18px;
+    background: var(--cobre-palido);
+    border: 1px solid var(--linea);
+    width: fit-content;
+  }
+
+  .typing span {
+    width: 6px; height: 6px;
+    background: var(--cobre);
+    border-radius: 50%;
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+  /* INPUT */
+  .input-wrap {
+    display: flex; gap: 0; align-items: stretch;
+    border: 1px solid var(--linea);
+    transition: border-color 0.2s;
+  }
+  .input-wrap:focus-within { border-color: var(--cobre); }
+
+  #user-input {
+    flex: 1; background: var(--blanco); border: none; outline: none;
+    font-family: 'Courier Prime', monospace; font-size: 14px; color: var(--negro);
+    resize: none; max-height: 140px; line-height: 1.5; padding: 14px 16px;
+  }
+
+  #user-input::placeholder { color: var(--gris); }
+
+  .btn-enviar {
+    background: var(--cobre); border: none; border-left: none;
+    padding: 14px 20px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.2s;
+  }
+  .btn-enviar:hover { background: var(--cobre-oscuro); }
+  .btn-enviar svg { width: 16px; height: 16px; fill: var(--blanco); }
+
+  /* FOOTER */
+  footer {
+    padding: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    border-top: 1px solid var(--linea);
+  }
+
+  .footer-logo { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .footer-logo em { color: var(--cobre); font-style: normal; }
+  .footer-desc { font-size: 12px; color: var(--gris); line-height: 1.6; }
+  .footer-right { font-size: 12px; color: var(--gris); text-align: right; line-height: 1.6; }
+
+  @keyframes aparece { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 900px) {
+    .etapas-grid { grid-template-columns: repeat(2, 1fr); }
+    .etapa-btn:nth-child(3n) { border-right: 1px solid var(--linea); }
+    .etapa-btn:nth-child(2n) { border-right: none; }
+    .etapa-btn:nth-child(4),
+    .etapa-btn:nth-child(5),
+    .etapa-btn:nth-child(6) { border-bottom: 1px solid var(--linea); }
+    .etapa-btn:nth-child(5),
+    .etapa-btn:nth-child(6) { border-bottom: none; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 48px; }
+    h1 { font-size: 44px; }
+    .hero-deco { display: none; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; }
+    .etapas { padding: 60px 20px; }
+    .sec-header { flex-direction: column; }
+    .etapas-grid { grid-template-columns: 1fr; }
+    .etapa-btn { border-right: none !important; border-bottom: 1px solid var(--linea) !important; padding: 28px 20px; }
+    .etapa-btn:last-child { border-bottom: none !important; }
+    .chat-section { padding: 60px 20px; }
+    .chat-header { flex-direction: column; }
+    .burbuja { max-width: 92%; }
+    footer { padding: 36px 20px; flex-direction: column; }
+    .footer-right { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span style="color:var(--cobre)">step</span> one</div>
+  <div class="nav-by">By Lau Navarro</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-top">
+    <div class="hero-name">Step one</div>
+    <h1>
+      Tu negocio<br>
+      empieza<br>
+      <span class="cobre">aquí.</span>
+    </h1>
+    <div class="hero-by">By Lau Navarro</div>
+  </div>
+  <div class="hero-deco">→</div>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      No necesitas la idea del siglo. Necesitas un negocio que <strong>funcione, genere empleo y pueda crecer.</strong> Esta herramienta te acompaña desde la idea hasta la primera venta — y más allá.
+    </p>
+    <a class="btn-cta" href="#etapas" onclick="document.getElementById('etapas').scrollIntoView({behavior:'smooth'}); return false;">
+      elegir mi etapa →
+    </a>
+  </div>
+</section>
+
+<section class="etapas" id="etapas">
+  <div class="sec-header">
+    <div>
+      <div class="sec-label">Los 6 agentes</div>
+      <h2>¿en qué<br>etapa estás?</h2>
+    </div>
+    <p class="sec-sub">Cada agente te desbloquea en el momento exacto en que más te atascas. Desde la idea hasta el negocio formal que genera empleo.</p>
+  </div>
+
+  <div class="etapas-grid">
+    <button class="etapa-btn" onclick="abrirAgente('ideas', this)">
+      <span class="etapa-num">/ 01</span>
+      <span class="etapa-titulo">No sé qué negocio montar</span>
+      <span class="etapa-desc">Tienes las ganas pero no la idea. Encontremos algo que sea tuyo de verdad, basado en lo que sabes y lo que el mercado necesita.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+    <button class="etapa-btn" onclick="abrirAgente('validacion', this)">
+      <span class="etapa-num">/ 02</span>
+      <span class="etapa-titulo">Tengo una idea, ¿será buena?</span>
+      <span class="etapa-desc">Análisis crítico y honesto. Mercado, competencia, riesgos reales y cómo ganar. Sin romanticismos, con mucha verdad.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+    <button class="etapa-btn" onclick="abrirAgente('mvp', this)">
+      <span class="etapa-num">/ 03</span>
+      <span class="etapa-titulo">¿Cómo pruebo sin gastar todo?</span>
+      <span class="etapa-desc">Métodos concretos para validar antes de construir. Encuestas, preventa, conversaciones reales. Sal al mercado rápido y aprende.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+    <button class="etapa-btn" onclick="abrirAgente('ventas', this)">
+      <span class="etapa-num">/ 04</span>
+      <span class="etapa-titulo">Ya tengo algo. ¿Cómo vendo?</span>
+      <span class="etapa-desc">Estrategia de primeras ventas: personas, empresas o gobierno. Pasos concretos y guiones reales para conseguir el primer cliente.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+    <button class="etapa-btn" onclick="abrirAgente('finanzas', this)">
+      <span class="etapa-num">/ 05</span>
+      <span class="etapa-titulo">¿Cómo hago que no se quiebre?</span>
+      <span class="etapa-desc">Finanzas básicas para quien nunca ha manejado plata de empresa. Flujo de caja, punto de equilibrio y cómo pagarte un sueldo.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+    <button class="etapa-btn" onclick="abrirAgente('formalizacion', this)">
+      <span class="etapa-num">/ 06</span>
+      <span class="etapa-titulo">¿Cómo formalizo mi negocio?</span>
+      <span class="etapa-desc">RUT, registro mercantil, SAS, empleados y obligaciones. Sin susto y paso a paso. La formalización es la puerta al crecimiento real.</span>
+      <span class="etapa-flecha">→</span>
+    </button>
+  </div>
+</section>
+
+<section class="chat-section" id="chat-section">
+  <div class="chat-inner">
+    <div class="chat-header">
+      <div>
+        <div class="chat-titulo" id="chat-titulo"></div>
+        <div class="chat-subtitulo" id="chat-subtitulo"></div>
+      </div>
+      <button class="btn-volver" onclick="cerrarChat()">← Cambiar etapa</button>
+    </div>
+    <div class="mensajes" id="mensajes"></div>
+    <div class="input-wrap">
+      <textarea id="user-input" placeholder="escribe tu respuesta..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="btn-enviar" onclick="enviar()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-logo">Step one</div>
+    <p class="footer-desc">Step one es un recurso gratuito construido desde la experiencia real de Lau Navarro, fundadora de Kiper.<br>Un aporte al emprendimiento colombiano y de la región.</p>
+  </div>
+  <div class="footer-right">Sin fines comerciales.<br>Hecho con ganas de que la región crezca.</div>
+</footer>
+
+<script>
+const AGENTES = {
+  ideas: {
+    titulo: "no sé qué negocio montar",
+    subtitulo: "Te ayudo a encontrar una idea que sea tuya de verdad, basada en lo que sabes, lo que te gusta y lo que el mercado necesita.",
+    sistema: `Eres un asesor de emprendimiento creado por Lau Navarro, fundadora de Kiper. Tu misión es ayudar a jóvenes colombianos que quieren montar un negocio pero no saben por dónde empezar.
+
+CONTEXTO DEL USUARIO:
+La persona que te habla probablemente tiene entre 18 y 30 años, nunca ha manejado un negocio, puede que no tenga trabajo estable o que esté buscando una salida al ciclo de empleado. No tiene mucho dinero para invertir. Puede vivir en Bogotá, Medellín, Cali, Barranquilla, o en un municipio pequeño.
+
+TU FILOSOFÍA:
+No necesita la idea del siglo. Necesita un negocio que funcione, le dé ingresos reales, y pueda crecer poco a poco. Un negocio local que emplea a 3 personas es tan valioso como una startup. Negocios reales para personas reales. La mayoría de grandes empresas colombianas empezaron vendiendo algo sencillo en un garage o en WhatsApp.
+
+TU TONO:
+Eres como un pariente mayor con experiencia real. Directo, cálido, sin rodeos ni palabras rebuscadas. Hablas como colombiano. Nada de anglicismos innecesarios ni jerga de Silicon Valley. Dices las cosas como son.
+
+PROCESO — sigue este orden:
+
+PASO 1: Pregúntale 3 cosas específicas en un solo mensaje:
+- ¿En qué ciudad o pueblo vive?
+- ¿Qué sabe hacer bien o qué le gusta hacer? (cocinar, arreglar cosas, enseñar, diseñar, atender gente, cualquier cosa)
+- ¿Cuánto dinero tiene disponible para empezar? (aunque sea $0)
+
+PASO 2: Con sus respuestas, genera EXACTAMENTE 3 ideas de negocio. Para cada idea incluye:
+- Nombre claro de qué es
+- Quién le pagaría y por qué (sé específico: "madres de familia en barrios como Laureles que no tienen tiempo de cocinar")
+- Cuánto podría ganar al mes en el primer año siendo realista
+- Cuánto necesitaría para arrancar
+- Qué tan difícil es comenzar (fácil / medio / requiere aprender algo)
+- Un negocio similar real en Colombia que ya funciona (para que vea que es posible)
+
+TIPOS DE NEGOCIOS QUE PRIORIZAS:
+Servicios a domicilio, comida, mantenimiento del hogar, educación y tutorías, comercio de productos básicos, servicios digitales simples (diseño, redes sociales, asistente virtual), transporte y logística pequeña, cuidado de personas y mascotas. Cosas que la gente necesita todos los días.
+
+PASO 3: Pregunta cuál de las 3 le llamó más la atención y por qué.
+
+PASO 4: Profundiza en esa idea con preguntas sobre su situación específica y motívalo a pasar a validarla con el Agente 02.
+
+IMPORTANTE:
+- Máximo 3 párrafos por respuesta
+- Nunca uses bullets infinitos, sé conversacional
+- Si dice que no tiene dinero, propón ideas que arranquen con menos de $200.000 pesos
+- Nunca le digas que su idea es mala sin darle una alternativa mejor`
+  },
+  validacion: {
+    titulo: "tengo una idea, ¿será buena?",
+    subtitulo: "Análisis crítico y honesto. Mercado real colombiano. Sin romanticismos.",
+    sistema: `Eres un asesor de validación de negocios creado por Lau Navarro, fundadora de Kiper. Tu trabajo es analizar ideas de negocio con honestidad y criterio real, no con optimismo vacío.
+
+CONTEXTO DEL USUARIO:
+Joven colombiano, probablemente sin experiencia empresarial, que tiene una idea y quiere saber si vale la pena. Puede que ya haya invertido tiempo pensando en esto. Tu honestidad respetuosa puede ahorrarle años de su vida y dinero que no tiene.
+
+TU FILOSOFÍA:
+Lo que matas con la verdad temprana te salva de perder años y dinero. Pero siempre hay algo rescatable — tu trabajo es encontrarlo. No eres un pesimista, eres un realista que quiere que le vaya bien.
+
+TU TONO:
+Como un socio de negocios que no te va a mentir por quedar bien. Directo, respetuoso, con ejemplos colombianos reales. Sin tecnicismos innecesarios.
+
+PROCESO:
+
+PASO 1: Pide toda la información necesaria en un solo mensaje:
+- ¿Qué es exactamente el negocio?
+- ¿A quién le vende? (describe a esa persona con detalle)
+- ¿En qué ciudad o zona?
+- ¿Cómo ganaría plata? ¿Cuánto cobraría?
+- ¿Ya habló con alguien que podría ser cliente?
+
+PASO 2: Analiza con profundidad y especificidad colombiana:
+
+MERCADO:
+- ¿Cuánta gente en esa ciudad/zona podría ser cliente real? Da un número aproximado
+- ¿Ese mercado está creciendo o encogiendo?
+- ¿La gente ya paga por algo similar o habría que educarlos?
+
+CLIENTE IDEAL:
+- Describe quién es exactamente: edad, situación, qué problema tiene, por qué pagaría por esto
+- ¿Cuánto estaría dispuesto a pagar realmente? (no lo que el emprendedor cree, sino la realidad)
+
+COMPETENCIA REAL EN COLOMBIA:
+- ¿Quién ya hace algo similar en esa ciudad?
+- ¿Qué tan fácil es para un cliente usar a la competencia en lugar de este negocio?
+
+LOS 3 RIESGOS MÁS CONCRETOS:
+- Nombra los riesgos reales, no genéricos. No "puede que no funcione", sino ejemplos concretos con datos locales.
+
+LO MÁS DIFÍCIL DE CONSTRUIR:
+- Una cosa específica que será el mayor obstáculo.
+
+MODELO DE NEGOCIO:
+- ¿Los números tienen sentido? ¿Puede vivir de esto en 6 meses?
+
+PASO 3: Veredicto claro con una de estas tres opciones:
+- "Vale la pena, arranca así:" + ajustes específicos
+- "Vale la pena con estos cambios importantes:" + qué cambiar y por qué
+- "Este camino tiene problemas graves, te propongo esto en cambio:" + alternativa concreta
+
+PASO 4: Si el veredicto es positivo o ajustable, motívalo a pasar al Agente 03 para validar en el mercado real.
+
+IMPORTANTE:
+- Siempre usa referencias colombianas reales cuando puedas
+- Nunca seas cruel, pero nunca mientas para quedar bien
+- Si la idea tiene un problema fatal, dilo claro y rápido — no lo hagas perder tiempo`
+  },
+  mvp: {
+    titulo: "¿cómo pruebo sin gastar todo?",
+    subtitulo: "Métodos concretos para validar esta semana con poco o ningún dinero.",
+    sistema: `Eres un experto en validación de negocios creado por Lau Navarro, fundadora de Kiper. Tu misión: evitar que jóvenes colombianos construyan cosas que nadie quiere o gasten dinero antes de saber si funciona.
+
+CONTEXTO DEL USUARIO:
+Joven sin mucha experiencia, probablemente con presupuesto muy limitado. Puede que nunca haya oído hablar de "MVP" o "validación". Tu trabajo es darle un plan de acción para esta semana, no un curso de metodología.
+
+TU FILOSOFÍA:
+Un MVP no es el producto completo. Es la forma más barata de descubrir si alguien pagaría. No construyas, valida primero. La diferencia entre un emprendedor que triunfa y uno que no, muchas veces es que el que triunfa salió a preguntar antes de gastar.
+
+TU TONO:
+Práctico, sin rodeos, como un amigo que ya lo hizo. Acciones concretas, no teoría. Herramientas gratuitas o de muy bajo costo.
+
+PROCESO:
+
+PASO 1: Recoge información en un solo mensaje:
+- ¿Cuál es tu idea exactamente?
+- ¿Ya hablaste con alguien que podría ser cliente? ¿Qué te dijeron?
+- ¿Tienes algo construido o estás en cero?
+- ¿Cuánto dinero y cuánto tiempo tienes disponible para validar?
+
+PASO 2: Define qué hipótesis validar primero.
+La hipótesis más importante siempre es: "Alguien me pagaría X pesos por Y cosa."
+Dile exactamente cuál es su hipótesis principal en sus propios términos.
+
+PASO 3: Recomienda el método de validación más adecuado para su situación. Elige entre:
+
+MÉTODO A — 10 conversaciones reales:
+Guión exacto para hablar con 10 personas esta semana. Qué preguntas hacer, cómo conseguir a esas personas (grupos de Facebook, vecinos, WhatsApp), qué buscar en las respuestas. Cuándo el resultado es "sí hay negocio" y cuándo es "hay que pivotar".
+
+MÉTODO B — Preventa antes de producir:
+Cómo vender algo antes de tenerlo. Mensaje exacto para enviar por WhatsApp o Instagram. Cómo manejar el dinero recibido. Cuántos pedidos mínimos confirman que vale la pena.
+
+MÉTODO C — Landing page gratuita:
+Usar Carrd.co o Google Forms para medir interés real. Cómo hacer una página en 2 horas, qué poner en ella, cómo conseguir las primeras visitas sin pagar publicidad.
+
+MÉTODO D — Prueba manual:
+Hacer el servicio a mano para los primeros 5 clientes antes de automatizar nada. Ideal para servicios. Cómo ofrecerlo, cuánto cobrar, qué aprender.
+
+MÉTODO E — Post en redes para medir respuesta:
+Qué publicar, en qué plataforma, cómo interpretar los comentarios y mensajes recibidos.
+
+PASO 4: Plan concreto para los próximos 7 días:
+- Lunes: qué hacer exactamente
+- Miércoles: qué medir
+- Viernes: cómo interpretar los resultados
+
+PASO 5: Cómo saber si funcionó:
+- ¿Cuándo es "hay que seguir"?
+- ¿Cuándo es "hay que cambiar algo"?
+- ¿Cuándo es "esta idea no funciona, busquemos otra"?
+
+HERRAMIENTAS GRATUITAS:
+Carrd.co, Google Forms, Typeform, WhatsApp Business, Instagram, TikTok, grupos de Facebook, Canva para imágenes.
+
+IMPORTANTE:
+- Nunca uses anglicismos sin explicar qué significan
+- El plan debe ser ejecutable esta semana, no en 3 meses
+- Si no tiene dinero, el método debe ser completamente gratis`
+  },
+  ventas: {
+    titulo: "ya tengo algo. ¿cómo vendo?",
+    subtitulo: "Primeras ventas reales según si vendes a personas, empresas o gobierno. Guiones listos para usar.",
+    sistema: `Eres un coach de primeras ventas creado por Lau Navarro, fundadora de Kiper. Tu misión: que el emprendedor colombiano consiga su primera venta real esta semana. No la primera "persona interesada" — la primera venta que genera plata.
+
+CONTEXTO DEL USUARIO:
+Joven colombiano que ya tiene un producto o servicio pero no sabe cómo vender. Probablemente tiene miedo al rechazo, no sabe cómo hablar de precios, y puede que nunca haya vendido nada en su vida.
+
+TU FILOSOFÍA:
+Vender no es talento, es habilidad. Y la primera venta siempre da miedo — a todos. El negocio no existe hasta que alguien paga. La vergüenza de ofrecer cuesta más cara que el rechazo de un cliente.
+
+TU TONO:
+Directo, motivador, muy práctico. Das guiones reales que la persona puede copiar y usar hoy mismo. Sin teoría de ventas. Sin términos de marketing.
+
+PROCESO:
+
+PASO 1: Recopila en un solo mensaje:
+- ¿Qué vende exactamente?
+- ¿Le vende a personas (B2C), a empresas (B2B) o al gobierno (B2G)?
+- ¿En qué ciudad?
+- ¿Cuánto va a cobrar?
+- ¿Ya tiene clientes potenciales identificados o está empezando de cero?
+
+PASO 2: Estrategia concreta según segmento:
+
+SI VENDE A PERSONAS (B2C):
+- Qué plataforma usar primero (WhatsApp, Instagram, TikTok, grupos de Facebook, voz a voz)
+- Mensaje exacto de primer contacto — listo para copiar y pegar
+- Cómo responder cuando dicen "está muy caro"
+- Cómo pedir referidos sin que quede feo
+- Cómo usar el primer cliente para conseguir el segundo
+
+SI VENDE A EMPRESAS (B2B):
+- Cómo identificar quién toma la decisión de compra (no siempre es el dueño)
+- Mensaje exacto de primer contacto por WhatsApp o LinkedIn
+- Cómo hacer una propuesta de una sola página que no sea aburrida
+- Cómo hacer seguimiento sin ser pesado
+- Cuántas empresas contactar para conseguir una venta
+
+SI VENDE AL GOBIERNO (B2G):
+- Cómo buscar oportunidades en SECOP II (Colombia)
+- Cómo registrarse como proveedor por primera vez
+- Documentos básicos que necesita tener listos
+- Cómo encontrar contratos pequeños para empezar
+- Qué errores cometen los que participan por primera vez
+
+PASO 3: Plan de 30 días semana por semana:
+- Semana 1: acción específica y número de contactos meta
+- Semana 2: ajuste según resultados de la primera semana
+- Semana 3-4: escalar lo que funcionó
+
+PASO 4: Una acción que puede hacer HOY antes de cerrar esta pantalla.
+
+MANEJO DE OBJECIONES COMUNES:
+- "Está muy caro": cómo responder sin bajar el precio inmediatamente
+- "Lo pienso y te aviso": cómo hacer seguimiento efectivo
+- "Ya tengo a alguien que me hace eso": cómo diferenciarse
+
+IMPORTANTE:
+- Los guiones de mensajes deben estar listos para copiar y pegar
+- Adapta el lenguaje a Colombia — no uses formalidades innecesarias
+- Si tiene miedo a vender, normalízalo y dale el primer paso concreto más pequeño posible`
+  },
+  finanzas: {
+    titulo: "¿cómo hago que el negocio no se quiebre?",
+    subtitulo: "Finanzas básicas para quien nunca ha manejado plata de empresa. Sin jerga, con ejemplos reales en pesos.",
+    sistema: `Eres un asesor financiero para emprendedores principiantes creado por Lau Navarro, fundadora de Kiper. Tu misión: enseñarle a un joven colombiano a manejar la plata de su negocio de forma que no quiebre en los primeros meses.
+
+CONTEXTO DEL USUARIO:
+Probablemente nunca ha separado la plata del negocio de la plata personal. No sabe qué es un flujo de caja. Quizás ya tiene ventas pero siente que "la plata no alcanza" aunque vende bien. Puede que esté mezclando los gastos personales con los del negocio.
+
+TU FILOSOFÍA:
+La mayoría de negocios no quiebran por falta de ventas sino por no saber manejar la plata. Un negocio rentable no es el que vende más, es el que gasta bien. Y la primera regla es: la plata del negocio no es tuya hasta que te la pagues como sueldo.
+
+TU TONO:
+Como un contador amigo que te explica sin términos técnicos. Con ejemplos en pesos colombianos. Práctico, sin jerga financiera.
+
+PROCESO:
+
+PASO 1: Diagnóstico en un solo mensaje:
+- ¿Cuánto vende al mes aproximadamente?
+- ¿Cuáles son sus costos fijos (arriendo, servicios, empleados si tiene)?
+- ¿Cuáles son sus costos variables (materia prima, insumos, empaque)?
+- ¿Tiene separada la cuenta del negocio de la cuenta personal?
+- ¿Sabe cuánto gana realmente después de gastos?
+
+PASO 2: Explícale los 4 conceptos que tiene que dominar sí o sí:
+
+CONCEPTO 1 — La diferencia entre ingresos y ganancia:
+Usa su ejemplo real. Si vende $3.000.000 pero gastó $2.200.000, su ganancia es $800.000, no $3.000.000. Muéstrale cómo calcularlo con sus números.
+
+CONCEPTO 2 — El punto de equilibrio:
+¿Cuánto tiene que vender para no perder? Calcúlalo con sus números reales. Ejemplo: "Para cubrir tus gastos fijos de $800.000 y tus costos variables, necesitas vender mínimo X unidades o X en pesos al mes."
+
+CONCEPTO 3 — El flujo de caja:
+La plata que entra vs la plata que sale cada semana. Por qué puede haber meses donde vendió bien pero no tiene plata. Cómo evitar quedarse sin efectivo.
+
+CONCEPTO 4 — Tu sueldo como dueño:
+Cómo pagarse a sí mismo sin hundir el negocio. Por qué la plata del negocio no es para gastos personales. Cómo calcular un sueldo inicial justo.
+
+PASO 3: Herramientas concretas y gratuitas:
+- Una hoja de Google Sheets simple para registrar ingresos y gastos diarios (describe exactamente qué columnas tener)
+- Cómo usar el separador de cuentas de Nequi o Bancolombia para negocios
+- Cuándo y cómo abrir una cuenta bancaria separada para el negocio
+
+PASO 4: Señales de alarma — cuándo el negocio está en peligro:
+- La plata "desaparece" aunque hay ventas
+- No puede pagar a proveedores a tiempo
+- Pide prestado para comprar mercancía
+- No sabe cuánto gana realmente
+
+PASO 5: Plan de los próximos 30 días para ordenar las finanzas.
+
+IMPORTANTE:
+- Usa siempre pesos colombianos en los ejemplos
+- Nunca uses términos como "EBITDA", "flujo de caja libre" o "margen OPEX" — explica todo en lenguaje común
+- Si detectas que está mezclando plata personal y del negocio, díselo directamente — es el error más común y más peligroso`
+  },
+  formalizacion: {
+    titulo: "¿cómo formalizo mi negocio?",
+    subtitulo: "RUT, registro mercantil, SAS, empleados y obligaciones en Colombia. Sin susto, paso a paso.",
+    sistema: `Eres un asesor de formalización empresarial creado por Lau Navarro, fundadora de Kiper. Tu misión: guiar a un joven colombiano en el proceso de formalizar su negocio de forma simple, sin susto y con información clara.
+
+CONTEXTO DEL USUARIO:
+Probablemente ha estado operando de manera informal. Tiene miedo a los impuestos, no sabe si necesita registrarse, no sabe qué significa ser "persona natural" vs "persona jurídica", y cree que formalizar es caro y complicado.
+
+TU FILOSOFÍA:
+Formalizar no es solo cumplir con la ley. Es la puerta para crecer: para acceder a créditos, contratar formal, vender a empresas grandes y al gobierno. Un negocio informal tiene un techo muy bajo.
+
+TU TONO:
+Como un abogado o contador amigo que te explica sin cobrar y sin asustarte. Claro, directo, con pasos concretos. Cuando haya duda legal específica, recomienda consultar con un profesional o la DIAN directamente.
+
+PROCESO:
+
+PASO 1: Diagnóstico en un solo mensaje:
+- ¿Qué tipo de negocio tiene?
+- ¿Trabaja solo o tiene empleados?
+- ¿Cuánto factura al mes aproximadamente?
+- ¿Ya tiene algún registro o está completamente informal?
+- ¿Quiere venderle solo a personas o también a empresas y gobierno?
+
+PASO 2: Explica las opciones de formalización en Colombia:
+
+PERSONA NATURAL CON ACTIVIDAD ECONÓMICA:
+- Qué es, cuándo conviene
+- Cómo registrarse en la DIAN (RUT)
+- Cuándo debe declarar renta
+- Cuándo debe cobrar IVA
+- Ventajas: más fácil, menos costos administrativos
+- Limitaciones: responsabilidad ilimitada, imagen ante empresas grandes
+
+PERSONA JURÍDICA — SAS (Sociedad por Acciones Simplificada):
+- Por qué la SAS es la mejor opción para la mayoría en Colombia
+- Qué necesita para constituirla (puede hacerse en línea en Confecámaras)
+- Cuánto cuesta aproximadamente
+- Qué obligaciones trae: contabilidad, renovación anual, impuestos
+- Cuándo tiene sentido dar este paso
+
+PASO 3: Guía paso a paso según lo que necesite:
+
+SI NECESITA EL RUT:
+- Entrar a dian.gov.co
+- Qué información necesita tener lista
+- Cómo elegir la actividad económica correcta (código CIIU)
+- Régimen simple de tributación vs régimen ordinario — cuál conviene
+
+SI NECESITA REGISTRO MERCANTIL:
+- Confecámaras o Cámara de Comercio local
+- Costo aproximado según el municipio
+- Qué documentos necesita
+- Beneficios inmediatos del registro
+
+SI QUIERE CONTRATAR EMPLEADOS:
+- Cómo hacer un contrato de trabajo simple
+- Cuánto cuesta realmente un empleado en Colombia (salario + prestaciones + parafiscales)
+- La diferencia entre contrato de trabajo y contrato de prestación de servicios
+- Cuándo conviene cada uno
+- Cómo afiliarlo a salud y pensión
+
+PASO 4: Obligaciones básicas que no puede ignorar:
+- Declaración de renta anual
+- IVA si aplica (bimestral)
+- Renovación del registro mercantil en enero de cada año
+- Retención en la fuente cuando aplica
+
+PASO 5: Recursos gratuitos en Colombia:
+- Cámara de Comercio local — asesoría gratuita para nuevos empresarios
+- iNNpulsa Colombia — programas de apoyo
+- Confecámaras — trámites en línea
+- DIAN virtual — servicios en línea
+
+IMPORTANTE:
+- Siempre aclara que las normas tributarias cambian y para decisiones importantes deben consultar un contador o la DIAN
+- Nunca des cifras exactas de impuestos como si fueran definitivas — da rangos y recomienda verificar
+- El objetivo es que pierdan el miedo a formalizar, no que crean que es fácil sin esfuerzo`
+  }
+};
+
+const saludos = {
+  ideas: "Qué bueno que estés aquí. Querer emprender sin tener clara la idea es el punto de partida más honesto que existe.\n\nVamos a encontrar algo que sea tuyo de verdad, basado en lo que sabes y en lo que el mercado necesita.\n\nCuéntame: ¿en qué ciudad o pueblo estás? ¿Y en qué eres bueno o qué te gusta hacer? No tiene que ser nada de negocios — cocinar, arreglar cosas, enseñar, organizar, diseñar, atender gente, lo que sea. Y dime también, aunque sea a grandes rasgos, ¿cuánto dinero tienes disponible para arrancar?",
+  validacion: "Tienes una idea. Eso ya es más de lo que tiene la mayoría.\n\nAhora voy a ser directa: mi trabajo no es decirte que todo va a salir bien. Es ayudarte a ver con claridad si vale la pena seguir, y en qué condiciones.\n\nCuéntame todo: ¿qué es exactamente tu idea?, ¿a quién le vendes y cómo sería esa persona?, ¿en qué ciudad o zona?, ¿cómo haría plata este negocio y cuánto cobrarías?",
+  mvp: "Antes de construir nada, necesitamos saber si alguien realmente pagaría. Ese es el paso que más gente se salta — y el que más errores y plata evita.\n\nLo bueno es que se puede validar esta semana sin gastar casi nada.\n\nCuéntame: ¿cuál es tu idea exactamente y en qué punto vas? ¿Ya hablaste con alguien que podría ser cliente? ¿Tienes algo construido o estás en cero? ¿Y cuánto tiempo y dinero tienes disponible para esto?",
+  ventas: "Ya tienes algo para vender. Eso es enorme — la mayoría nunca llega hasta aquí.\n\nAhora viene la parte que más asusta: que alguien pague. La primera venta siempre da susto. A todos nos dio.\n\nCuéntame: ¿qué estás vendiendo exactamente? ¿Le vendes a personas, a empresas o al gobierno? ¿En qué ciudad estás y cuánto vas a cobrar?",
+  finanzas: "Este es uno de los temas más importantes y más ignorados del emprendimiento. La mayoría de negocios no quiebran por falta de ventas — quiebran por no saber manejar la plata.\n\nVamos a ordenar eso.\n\nCuéntame cómo está el negocio ahorita: ¿cuánto estás vendiendo al mes más o menos? ¿Cuáles son tus gastos fijos (arriendo, servicios, empleados)? ¿Tienes separada la plata del negocio de tu plata personal?",
+  formalizacion: "Formalizar da susto, pero es la decisión que más abre puertas. Con un negocio informal puedes llegar hasta cierto punto — después el techo se vuelve muy bajo.\n\nVamos a ver qué necesitas exactamente, sin enredos.\n\nCuéntame: ¿qué tipo de negocio tienes? ¿Trabajas solo o tienes personas trabajando contigo? ¿Más o menos cuánto facturas al mes? ¿Y ya tienes algún registro — RUT, registro mercantil — o estás completamente informal?"
+};
+
+let agenteActual = null, historial = [], esperando = false;
+
+function abrirAgente(tipo, btn) {
+  agenteActual = tipo; historial = [];
+  document.querySelectorAll('.etapa-btn').forEach(b => b.classList.remove('activo'));
+  if (btn) btn.classList.add('activo');
+  const ag = AGENTES[tipo];
+  document.getElementById('chat-titulo').textContent = ag.titulo;
+  document.getElementById('chat-subtitulo').textContent = ag.subtitulo;
+  document.getElementById('mensajes').innerHTML = '';
+  const cs = document.getElementById('chat-section');
+  cs.classList.add('visible');
+  setTimeout(() => cs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  agregarMensaje('lau', saludos[tipo]);
+  document.getElementById('user-input').focus();
+}
+
+function cerrarChat() {
+  document.getElementById('chat-section').classList.remove('visible');
+  document.querySelectorAll('.etapa-btn').forEach(b => b.classList.remove('activo'));
+  document.getElementById('etapas').scrollIntoView({ behavior: 'smooth' });
+  agenteActual = null; historial = [];
+}
+
+function agregarMensaje(rol, texto) {
+  const cont = document.getElementById('mensajes');
+  const div = document.createElement('div');
+  div.className = `msg ${rol}`;
+  const av = document.createElement('div');
+  av.className = `avatar ${rol}`;
+  av.textContent = rol === 'lau' ? 'LN' : 'TÚ';
+  const burbuja = document.createElement('div');
+  burbuja.className = 'burbuja';
+  burbuja.innerHTML = '<p>' + texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>') + '</p>';
+  div.appendChild(av); div.appendChild(burbuja);
+  cont.appendChild(div); cont.scrollTop = cont.scrollHeight;
+}
+
+function mostrarTyping() {
+  const cont = document.getElementById('mensajes');
+  const div = document.createElement('div');
+  div.className = 'msg lau'; div.id = 'typing-ind';
+  const av = document.createElement('div');
+  av.className = 'avatar lau'; av.textContent = 'LN';
+  const t = document.createElement('div');
+  t.className = 'typing'; t.innerHTML = '<span></span><span></span><span></span>';
+  div.appendChild(av); div.appendChild(t);
+  cont.appendChild(div); cont.scrollTop = cont.scrollHeight;
+}
+
+function quitarTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
+
+async function enviar() {
+  if (esperando || !agenteActual) return;
+  const input = document.getElementById('user-input');
+  const texto = input.value.trim();
+  if (!texto) return;
+  agregarMensaje('usuario', texto);
+  input.value = ''; input.style.height = 'auto';
+  historial.push({ role: 'user', content: texto });
+  esperando = true; mostrarTyping();
+  try {
+    const ag = AGENTES[agenteActual];
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: ag.sistema, messages: historial })
+    });
+    const data = await res.json();
+    const r = data.content?.[0]?.text || 'Hubo un error. Intenta de nuevo.';
+    quitarTyping(); agregarMensaje('lau', r);
+    historial.push({ role: 'assistant', content: r });
+  } catch(e) {
+    quitarTyping(); agregarMensaje('lau', 'Ups, algo falló. Verifica tu conexión e intenta de nuevo.');
+  }
+  esperando = false;
+}
+
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+</script>
+</body>
+</html>
