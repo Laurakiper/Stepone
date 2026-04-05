@@ -962,37 +962,29 @@ async function enviar() {
   const input = document.getElementById('user-input');
   const texto = input.value.trim();
   if (!texto) return;
-
   agregarMensaje('usuario', texto);
-  input.value = '';
-  input.style.height = 'auto';
-
+  input.value = ''; input.style.height = 'auto';
   historial.push({ role: 'user', content: texto });
-  esperando = true;
-  mostrarTyping();
-
+  esperando = true; mostrarTyping();
   try {
-    const res = await fetch('/api/chat', {
+    const ag = AGENTES[agenteActual];
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: texto })
+      headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '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',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: ag.sistema, messages: historial })
     });
-
     const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || data.details || 'Hubo un error. Intenta de nuevo.');
-    }
-
     const r = data.content?.[0]?.text || 'Hubo un error. Intenta de nuevo.';
-    quitarTyping();
-    agregarMensaje('lau', r);
+    quitarTyping(); agregarMensaje('lau', r);
     historial.push({ role: 'assistant', content: r });
-  } catch (e) {
-    quitarTyping();
-    agregarMensaje('lau', e.message || 'Ups, algo falló. Verifica tu conexión e intenta de nuevo.');
+  } catch(e) {
+    quitarTyping(); agregarMensaje('lau', 'Ups, algo falló. Verifica tu conexión e intenta de nuevo.');
   }
-
   esperando = false;
 }
 
