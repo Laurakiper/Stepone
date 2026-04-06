@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Step one — by Lau Navarro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --blanco: #F9F6F1;
-    --cobre: #C4622D;
-    --cobre-oscuro: #9E4820;
-    --cobre-claro: #E8866A;
-    --cobre-palido: #F5E6DE;
-    --negro: #1A1208;
-    --gris: #8A7A6E;
-    --gris-claro: #E8E0D6;
-    --linea: #D4C4B4;
+    --blanco: #F7F4EF;
+    --naranja: #FF6B35;
+    --naranja-oscuro: #D94F1A;
+    --naranja-claro: #FF8F5E;
+    --naranja-palido: #FFF0E9;
+    --negro: #1A2E4A;
+    --gris: #7A8FA8;
+    --gris-claro: #EDE9E2;
+    --linea: #DDD8D0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Courier Prime', 'Courier New', monospace;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--blanco);
     color: var(--negro);
     min-height: 100vh;
@@ -40,12 +40,12 @@
   }
 
   .logo {
-    font-size: 26px; font-weight: 700; color: var(--negro);
+    font-size: 26px; font-weight: 800; color: var(--negro);
     letter-spacing: -0.5px;
   }
 
-  .logo em { color: var(--cobre); font-style: normal; }
-  .nav-by { font-size: 12px; color: var(--gris); letter-spacing: 0.3px; }
+  .logo em { color: var(--naranja); font-style: normal; }
+  .nav-by { font-size: 12px; color: var(--gris); letter-spacing: 0.3px; font-weight: 500; }
 
   /* HERO */
   .hero {
@@ -66,8 +66,8 @@
 
   .hero-name {
     font-size: clamp(60px, 12vw, 140px);
-    font-weight: 700;
-    color: var(--cobre);
+    font-weight: 800;
+    color: var(--naranja);
     line-height: 0.9;
     letter-spacing: -3px;
     margin-bottom: 32px;
@@ -81,21 +81,22 @@
     letter-spacing: 2px;
     margin-top: 20px;
     opacity: 0;
+    font-weight: 500;
     animation: aparece 0.7s ease forwards 0.3s;
   }
 
   h1 {
     font-size: clamp(48px, 8vw, 96px);
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.0;
     color: var(--negro);
     margin-bottom: 0;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
     opacity: 0;
     animation: aparece 0.7s ease forwards 0.2s;
   }
 
-  h1 .cobre { color: var(--cobre); }
+  h1 .naranja { color: var(--naranja); }
 
   .hero-bottom {
     display: flex;
@@ -113,18 +114,19 @@
     line-height: 1.7;
     color: var(--gris);
     max-width: 440px;
+    font-weight: 400;
   }
 
   .hero-desc strong { color: var(--negro); font-weight: 700; }
 
   .btn-cta {
     display: inline-block;
-    background: var(--cobre);
+    background: var(--naranja);
     color: var(--blanco);
-    font-family: 'Courier Prime', monospace;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     padding: 14px 28px;
     border: none;
     cursor: pointer;
@@ -132,17 +134,19 @@
     white-space: nowrap;
     transition: background 0.2s, transform 0.15s;
     flex-shrink: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(255,107,53,0.3);
   }
 
-  .btn-cta:hover { background: var(--cobre-oscuro); transform: translateY(-1px); }
+  .btn-cta:hover { background: var(--naranja-oscuro); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,0.4); }
 
   .hero-deco {
     position: absolute;
     right: 48px; top: 50%;
     transform: translateY(-50%);
     font-size: 200px;
-    color: var(--cobre-palido);
-    font-weight: 700;
+    color: var(--naranja-palido);
+    font-weight: 800;
     pointer-events: none;
     user-select: none;
     line-height: 1;
@@ -168,17 +172,18 @@
 
   .sec-label {
     font-size: 11px;
-    color: var(--cobre);
+    color: var(--naranja);
     letter-spacing: 3px;
     margin-bottom: 14px;
+    font-weight: 700;
   }
 
   h2 {
     font-size: clamp(28px, 4vw, 44px);
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.1;
     color: var(--negro);
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
   }
 
   .sec-sub {
@@ -187,6 +192,7 @@
     line-height: 1.65;
     max-width: 320px;
     padding-top: 4px;
+    font-weight: 400;
   }
 
   /* GRID 6 AGENTES — 3 columnas */
@@ -195,6 +201,8 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
     border: 1px solid var(--linea);
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .etapa-btn {
@@ -210,22 +218,21 @@
     flex-direction: column;
     gap: 0;
     position: relative;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
-  /* Quitar borde derecho de última columna */
   .etapa-btn:nth-child(3n) { border-right: none; }
-  /* Quitar borde inferior de última fila */
   .etapa-btn:nth-child(4),
   .etapa-btn:nth-child(5),
   .etapa-btn:nth-child(6) { border-bottom: none; }
 
-  .etapa-btn:hover { background: var(--cobre-palido); }
-  .etapa-btn.activo { background: var(--cobre-palido); border-left: 3px solid var(--cobre); }
+  .etapa-btn:hover { background: var(--naranja-palido); }
+  .etapa-btn.activo { background: var(--naranja-palido); border-left: 3px solid var(--naranja); }
 
   .etapa-num {
     font-size: 11px;
     letter-spacing: 2px;
-    color: var(--cobre);
+    color: var(--naranja);
     margin-bottom: 14px;
     font-weight: 700;
   }
@@ -244,11 +251,12 @@
     line-height: 1.6;
     flex: 1;
     margin-bottom: 20px;
+    font-weight: 400;
   }
 
   .etapa-flecha {
     font-size: 18px;
-    color: var(--cobre);
+    color: var(--naranja);
     transition: transform 0.2s;
   }
 
@@ -272,13 +280,13 @@
   }
 
   .chat-titulo {
-    font-size: 22px; font-weight: 700; color: var(--negro);
-    margin-bottom: 6px; line-height: 1.2;
+    font-size: 22px; font-weight: 800; color: var(--negro);
+    margin-bottom: 6px; line-height: 1.2; letter-spacing: -0.5px;
   }
 
   .chat-subtitulo {
     font-size: 13px; color: var(--gris); line-height: 1.5;
-    max-width: 460px;
+    max-width: 460px; font-weight: 400;
   }
 
   .btn-volver {
@@ -287,15 +295,17 @@
     padding: 9px 16px;
     font-size: 12px;
     color: var(--gris);
-    font-family: 'Courier Prime', monospace;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.2s;
     flex-shrink: 0;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    border-radius: 8px;
   }
 
-  .btn-volver:hover { border-color: var(--cobre); color: var(--cobre); }
+  .btn-volver:hover { border-color: var(--naranja); color: var(--naranja); }
 
   /* MENSAJES */
   .mensajes {
@@ -310,28 +320,33 @@
     width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: 700; flex-shrink: 0;
-    font-family: 'Courier Prime', monospace;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     letter-spacing: 0.5px;
     border: 1px solid var(--linea);
+    border-radius: 10px;
   }
 
-  .avatar.lau { background: var(--cobre); color: var(--blanco); border-color: var(--cobre); }
+  .avatar.lau { background: var(--naranja); color: var(--blanco); border-color: var(--naranja); }
   .avatar.usuario { background: var(--blanco); color: var(--gris); }
 
   .burbuja {
     max-width: 78%; padding: 14px 18px;
     font-size: 14px; line-height: 1.7;
+    border-radius: 12px;
+    font-weight: 400;
   }
 
   .msg.lau .burbuja {
-    background: var(--cobre-palido);
+    background: var(--naranja-palido);
     color: var(--negro);
     border: 1px solid var(--linea);
+    border-top-left-radius: 2px;
   }
 
   .msg.usuario .burbuja {
     background: var(--negro);
     color: var(--blanco);
+    border-top-right-radius: 2px;
   }
 
   .burbuja p { margin-bottom: 8px; }
@@ -343,14 +358,16 @@
   .typing {
     display: flex; gap: 5px; align-items: center;
     padding: 14px 18px;
-    background: var(--cobre-palido);
+    background: var(--naranja-palido);
     border: 1px solid var(--linea);
     width: fit-content;
+    border-radius: 12px;
+    border-top-left-radius: 2px;
   }
 
   .typing span {
     width: 6px; height: 6px;
-    background: var(--cobre);
+    background: var(--naranja);
     border-radius: 50%;
     animation: bounce 1.2s ease-in-out infinite;
   }
@@ -364,24 +381,27 @@
     display: flex; gap: 0; align-items: stretch;
     border: 1px solid var(--linea);
     transition: border-color 0.2s;
+    border-radius: 10px;
+    overflow: hidden;
   }
-  .input-wrap:focus-within { border-color: var(--cobre); }
+  .input-wrap:focus-within { border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(255,107,53,0.1); }
 
   #user-input {
-    flex: 1; background: var(--blanco); border: none; outline: none;
-    font-family: 'Courier Prime', monospace; font-size: 14px; color: var(--negro);
+    flex: 1; background: white; border: none; outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--negro);
     resize: none; max-height: 140px; line-height: 1.5; padding: 14px 16px;
+    font-weight: 400;
   }
 
   #user-input::placeholder { color: var(--gris); }
 
   .btn-enviar {
-    background: var(--cobre); border: none; border-left: none;
+    background: var(--naranja); border: none;
     padding: 14px 20px;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: background 0.2s;
   }
-  .btn-enviar:hover { background: var(--cobre-oscuro); }
+  .btn-enviar:hover { background: var(--naranja-oscuro); }
   .btn-enviar svg { width: 16px; height: 16px; fill: var(--blanco); }
 
   /* FOOTER */
@@ -392,10 +412,10 @@
     border-top: 1px solid var(--linea);
   }
 
-  .footer-logo { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-  .footer-logo em { color: var(--cobre); font-style: normal; }
-  .footer-desc { font-size: 12px; color: var(--gris); line-height: 1.6; }
-  .footer-right { font-size: 12px; color: var(--gris); text-align: right; line-height: 1.6; }
+  .footer-logo { font-size: 14px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .footer-logo em { color: var(--naranja); font-style: normal; }
+  .footer-desc { font-size: 12px; color: var(--gris); line-height: 1.6; font-weight: 400; }
+  .footer-right { font-size: 12px; color: var(--gris); text-align: right; line-height: 1.6; font-weight: 400; }
 
   @keyframes aparece { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -432,7 +452,7 @@
 <body>
 
 <nav>
-  <div class="logo"><span style="color:var(--cobre)">step</span> one</div>
+  <div class="logo"><span style="color:var(--naranja)">step</span> one</div>
   <div class="nav-by">By Lau Navarro</div>
 </nav>
 
@@ -442,7 +462,7 @@
     <h1>
       Tu negocio<br>
       empieza<br>
-      <span class="cobre">aquí.</span>
+      <span class="naranja">aquí.</span>
     </h1>
     <div class="hero-by">By Lau Navarro</div>
   </div>
