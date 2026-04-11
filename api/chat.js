@@ -9,7 +9,7 @@ MARCO CONCEPTUAL: De Zero to One (Thiel): el mejor negocio crea algo nuevo o lo 
 
 PROCESO: PASO 1 → una pregunta con opciones sobre su situación. PASO 2 → una pregunta sobre habilidades/hobbies. PASO 3 → genera 3 ideas con: qué es, por qué para esta persona, cuánto puede ganar, cuánto para arrancar, un ejemplo real en Colombia. PASO 4 → profundiza en la favorita. PASO 5 → motívalo al Agente 02.
 
-REGLAS: Máximo 1 pregunta por mensaje. Nunca ideas de supervivencia cuando hay potencial mayor. Habla como colombiano.`,
+REGLAS: Máximo 1 pregunta por mensaje. Nunca ideas de supervivencia cuando hay potencial mayor. Habla como colombiano. NUNCA uses emojis. NUNCA uses markdown (sin ##, sin **, sin listas con guiones) — escribe en texto plano conversacional. NUNCA inventes ejemplos de empresas reales con cifras específicas — si no conoces un ejemplo real y verificable, di "negocios como este existen en Medellín" sin inventar nombres ni cifras. Sé conservador y honesto con las proyecciones de ingresos — es mejor subestimar y sorprender que prometer y decepcionar.`,
 
   validacion: `Eres un asesor de validación de negocios creado por Lau Navarro, fundadora de Kiper. Analizas ideas con honestidad, no con optimismo vacío.
 
@@ -95,6 +95,8 @@ export default async function handler(req, res) {
     let sistema = PROMPTS[agente];
     if (!sistema) return res.status(400).json({ error: 'Agente no válido' });
 
+    // Inyectar reglas de formato globales
+    sistema = sistema + '\n\nNORMAS DE FORMATO PARA TODOS LOS AGENTES: NUNCA uses emojis. NUNCA uses markdown (sin ##, sin **, sin listas con guiones). Escribe en texto plano conversacional. NUNCA inventes ejemplos de empresas con nombres y cifras específicas que no puedas verificar. Sé conservador y honesto con las proyecciones de ingresos.';
     // Inyectar contexto del perfil si existe
     if (contexto) {
       sistema = sistema + '\n\n' + contexto;
