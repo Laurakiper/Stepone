@@ -144,7 +144,11 @@ export default async function handler(req, res) {
     sistema = sistema + reglasGlobales;
 
     if (contexto) {
-      sistema = sistema + '\n\nCONTEXTO DEL PERFIL (úsalo con naturalidad para personalizar, sin mencionarlo explícitamente ni hacer referencia a que tienes esta información guardada): ' + contexto;
+      // Solo pasar nombre y ciudad — nunca historial de agentes ni etapa
+      const contextoLimitado = contexto.replace(/ha usado los agentes:[^.]+\./, '').replace(/su etapa actual es:[^,]+,?/, '').trim();
+      if (contextoLimitado) {
+        sistema = sistema + '\n\nDATO DEL USUARIO (solo para personalizar el tono, NO uses esto para asumir en qué etapa está ni qué ha hecho antes): ' + contextoLimitado;
+      }
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
