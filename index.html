@@ -689,7 +689,9 @@ function abrirAgente(tipo, btn) {
   const cs = document.getElementById('chat-section');
   cs.classList.add('visible');
   setTimeout(() => cs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  agregarMensaje('lau', saludos[tipo]);
+  const saludoTexto = saludos[tipo];
+  agregarMensaje('lau', saludoTexto);
+  historial.push({ role: 'assistant', content: saludoTexto });
   document.getElementById('user-input').focus();
 }
 
