@@ -215,6 +215,7 @@ export default async function handler(req, res) {
     if (!sistema) return res.status(400).json({ error: 'Agente no valido' });
 
     const reglasGlobales = `\n\nNORMAS DE FORMATO — SIEMPRE APLICAN:
+0. CUANDO REDIRIJAS A OTRO AGENTE: siempre usa el formato exacto "el Agente 01", "el Agente 02", etc. con ese formato preciso. Ejemplo: "Para eso está el Agente 02 — te ayuda a validar si tu idea tiene potencial." NUNCA uses "vuelve cuando tengas una idea" ni "observa más" — siempre redirige con calidez y con el número exacto del agente. El usuario no debe sentirse rechazado, debe sentirse dirigido al lugar correcto.
 1. NUNCA uses emojis.
 2. NUNCA uses markdown: sin ##, sin **, sin listas con guiones, sin PALABRAS EN MAYÚSCULAS como headers, sin "LUNES:", "MERCADO:", "RIESGO 1:" etc.
 3. Escribe como habla un mentor en una conversación real — párrafos cortos y fluidos.
