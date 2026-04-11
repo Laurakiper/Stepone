@@ -419,6 +419,37 @@
 
   @keyframes aparece { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* LOGIN */
+  .btn-login {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--naranja); color: var(--blanco);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px; font-weight: 700;
+    padding: 8px 16px; border: none; cursor: pointer;
+    transition: background 0.2s; letter-spacing: 0.3px;
+  }
+  .btn-login:hover { background: var(--naranja-oscuro); }
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--naranja); }
+  .user-name { font-size: 12px; font-weight: 700; color: var(--negro); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-logout { background: transparent; border: 1px solid var(--linea); padding: 5px 10px; font-size: 11px; color: var(--gris); font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .btn-logout:hover { border-color: var(--naranja); color: var(--naranja); }
+  .welcome-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: var(--blanco); flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+  .welcome-overlay.show { display: flex; }
+  .welcome-logo { font-size: 48px; font-weight: 800; color: var(--naranja); margin-bottom: 8px; }
+  .welcome-title { font-size: 28px; font-weight: 800; color: var(--negro); margin-bottom: 12px; text-align: center; }
+  .welcome-sub { font-size: 15px; color: var(--gris); line-height: 1.6; max-width: 420px; text-align: center; margin-bottom: 36px; }
+  .welcome-sub strong { color: var(--negro); }
+  .btn-google { display: inline-flex; align-items: center; gap: 12px; background: var(--blanco); border: 1px solid var(--linea); padding: 14px 28px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; color: var(--negro); cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .btn-google:hover { border-color: var(--naranja); box-shadow: 0 4px 16px rgba(255,107,53,0.15); }
+  .btn-google img { width: 20px; height: 20px; }
+  .welcome-skip { margin-top: 16px; font-size: 12px; color: var(--gris); background: none; border: none; cursor: pointer; text-decoration: underline; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .welcome-skip:hover { color: var(--negro); }
+  .perfil-banner { display: none; background: var(--naranja-palido); border-bottom: 1px solid var(--linea); padding: 10px 48px; font-size: 13px; color: var(--negro); align-items: center; gap: 8px; }
+  .perfil-banner.show { display: flex; }
+  .perfil-banner strong { font-weight: 700; color: var(--naranja); }
+
+
   @media (max-width: 900px) {
     .etapas-grid { grid-template-columns: repeat(2, 1fr); }
     .etapa-btn:nth-child(3n) { border-right: 1px solid var(--linea); }
@@ -453,10 +484,28 @@
 </head>
 <body>
 
+<div class="perfil-banner" id="perfilBanner"></div>
 <nav>
   <div class="logo"><span style="color:var(--naranja)">step</span> one</div>
-  <div class="nav-by">By Lau Navarro</div>
+  <div id="navAuth">
+    <button class="btn-login" onclick="loginGoogle()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      Entrar con Google
+    </button>
+  </div>
 </nav>
+
+<!-- WELCOME OVERLAY -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-logo">step one</div>
+  <div class="welcome-title">Tu negocio empieza aquí.</div>
+  <p class="welcome-sub">Entra con tu cuenta de Google para que Step One <strong>recuerde tu progreso</strong> y te acompañe en cada etapa de tu negocio.</p>
+  <button class="btn-google" onclick="loginGoogle()">
+    <img src="https://www.google.com/favicon.ico" alt="Google">
+    Continuar con Google
+  </button>
+  <button class="welcome-skip" onclick="cerrarWelcome()">Continuar sin cuenta por ahora</button>
+</div>
 
 <section class="hero">
   <div class="hero-top">
@@ -689,15 +738,17 @@ async function enviar() {
   historial.push({ role: 'user', content: texto });
   esperando = true; mostrarTyping();
   try {
+    const contexto = window.getPerfilContexto ? window.getPerfilContexto() : '';
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ agente: agenteActual, messages: historial })
+      body: JSON.stringify({ agente: agenteActual, messages: historial, contexto })
     });
     const data = await res.json();
     const r = data.content?.[0]?.text || 'Hubo un error. Intenta de nuevo.';
     quitarTyping(); agregarMensaje('lau', r);
     historial.push({ role: 'assistant', content: r });
+    if (window.extraerYGuardarPerfil) window.extraerYGuardarPerfil(agenteActual, texto, r);
   } catch(e) {
     quitarTyping(); agregarMensaje('lau', 'Ups, algo falló. Verifica tu conexión e intenta de nuevo.');
   }
@@ -707,5 +758,168 @@ async function enviar() {
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 </script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBSW1U7bdKiUkl0EF5sAhNnKpQfAQKs5Ck",
+  authDomain: "step-one-27a0a.firebaseapp.com",
+  projectId: "step-one-27a0a",
+  storageBucket: "step-one-27a0a.firebasestorage.app",
+  messagingSenderId: "182481581137",
+  appId: "1:182481581137:web:ddaf2fd8f0efd469def470"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+let usuarioActual = null;
+let perfilUsuario = null;
+
+// Exponer funciones globalmente
+window.loginGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    // El onAuthStateChanged se encarga del resto
+  } catch(e) {
+    console.error('Error login:', e);
+  }
+};
+
+window.logoutGoogle = async () => {
+  await signOut(auth);
+};
+
+window.cerrarWelcome = () => {
+  document.getElementById('welcomeOverlay').classList.remove('show');
+};
+
+// Observar cambios de autenticación
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    usuarioActual = user;
+    document.getElementById('welcomeOverlay').classList.remove('show');
+
+    // Actualizar nav
+    document.getElementById('navAuth').innerHTML = `
+      <div class="user-info">
+        <img class="user-avatar" src="${user.photoURL}" alt="${user.displayName}">
+        <span class="user-name">${user.displayName.split(' ')[0]}</span>
+        <button class="btn-logout" onclick="logoutGoogle()">Salir</button>
+      </div>
+    `;
+
+    // Cargar o crear perfil en Firestore
+    const ref = doc(db, 'usuarios', user.uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      // Primer login — crear perfil
+      perfilUsuario = {
+        nombre: user.displayName,
+        email: user.email,
+        foto: user.photoURL,
+        creadoEn: serverTimestamp(),
+        ultimaVisita: serverTimestamp(),
+        agentesUsados: [],
+        etapaActual: null,
+        ciudad: null,
+        tipoNegocio: null,
+        ideaNegocio: null,
+        notas: []
+      };
+      await setDoc(ref, perfilUsuario);
+    } else {
+      perfilUsuario = snap.data();
+      // Actualizar última visita
+      await updateDoc(ref, { ultimaVisita: serverTimestamp() });
+    }
+
+    // Mostrar banner de bienvenida
+    const banner = document.getElementById('perfilBanner');
+    const nombre = user.displayName.split(' ')[0];
+    banner.innerHTML = `👋 Hola <strong>${nombre}</strong> — tu progreso se guarda automáticamente.`;
+    banner.classList.add('show');
+
+    // Si tiene perfil con información, mostrársela
+    if (perfilUsuario.ideaNegocio) {
+      banner.innerHTML = `👋 Hola <strong>${nombre}</strong> — continuamos con tu negocio: <strong>${perfilUsuario.ideaNegocio}</strong>`;
+    }
+
+  } else {
+    usuarioActual = null;
+    perfilUsuario = null;
+    document.getElementById('navAuth').innerHTML = `
+      <button class="btn-login" onclick="loginGoogle()">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Entrar con Google
+      </button>
+    `;
+    document.getElementById('perfilBanner').classList.remove('show');
+    // Mostrar welcome si no ha entrado antes
+    setTimeout(() => {
+      if (!usuarioActual) document.getElementById('welcomeOverlay').classList.add('show');
+    }, 2000);
+  }
+});
+
+// Guardar info del perfil después de cada conversación
+window.guardarEnPerfil = async (datos) => {
+  if (!usuarioActual) return;
+  try {
+    const ref = doc(db, 'usuarios', usuarioActual.uid);
+    await updateDoc(ref, {
+      ...datos,
+      ultimaActividad: serverTimestamp()
+    });
+    perfilUsuario = { ...perfilUsuario, ...datos };
+  } catch(e) {
+    console.error('Error guardando perfil:', e);
+  }
+};
+
+// Extraer info clave de las respuestas del agente
+window.extraerYGuardarPerfil = async (agente, mensajeUsuario, respuestaAgente) => {
+  if (!usuarioActual) return;
+  const datos = {};
+  // Registrar agente usado
+  const agentesUsados = perfilUsuario?.agentesUsados || [];
+  if (!agentesUsados.includes(agente)) {
+    datos.agentesUsados = [...agentesUsados, agente];
+    datos.etapaActual = agente;
+  }
+  // Detectar ciudad en el mensaje
+  const ciudades = ['bogotá', 'bogota', 'medellín', 'medellin', 'cali', 'barranquilla', 'cartagena', 'bucaramanga', 'pereira', 'manizales'];
+  const msgLower = mensajeUsuario.toLowerCase();
+  for (const ciudad of ciudades) {
+    if (msgLower.includes(ciudad)) {
+      datos.ciudad = ciudad.charAt(0).toUpperCase() + ciudad.slice(1);
+      break;
+    }
+  }
+  if (Object.keys(datos).length > 0) {
+    await guardarEnPerfil(datos);
+  }
+};
+
+// Hacer disponible el perfil para el sistema de chat
+window.getPerfilContexto = () => {
+  if (!perfilUsuario) return '';
+  const partes = [];
+  if (perfilUsuario.nombre) partes.push(`El usuario se llama ${perfilUsuario.nombre.split(' ')[0]}`);
+  if (perfilUsuario.ciudad) partes.push(`vive en ${perfilUsuario.ciudad}`);
+  if (perfilUsuario.ideaNegocio) partes.push(`su idea de negocio es: ${perfilUsuario.ideaNegocio}`);
+  if (perfilUsuario.etapaActual) partes.push(`su etapa actual es: ${perfilUsuario.etapaActual}`);
+  if (perfilUsuario.agentesUsados?.length) partes.push(`ha usado los agentes: ${perfilUsuario.agentesUsados.join(', ')}`);
+  return partes.length ? 'CONTEXTO DEL USUARIO: ' + partes.join(', ') + '. Personaliza tu respuesta con esta información.' : '';
+};
+</script>
+
 </body>
 </html>
