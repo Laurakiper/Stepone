@@ -419,6 +419,18 @@
 
   @keyframes aparece { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* BOTÓN TRANSFERENCIA */
+  .btn-transfer {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--naranja); color: var(--blanco);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 10px 20px; border: none; cursor: pointer;
+    transition: background 0.2s; margin-top: 12px;
+    letter-spacing: 0.3px;
+  }
+  .btn-transfer:hover { background: var(--naranja-oscuro); }
+
   /* LOGIN */
   .btn-login {
     display: inline-flex; align-items: center; gap: 8px;
@@ -666,7 +678,7 @@ const AGENTES = {
 const saludos = {
   ideas: "Bien. El primer paso siempre es el más difícil — y ya lo estás dando.\n\nPara encontrar una idea que sea tuya de verdad, necesito conocerte un poco. ¿Con cuál de estas opciones te identificas más?\n\na) Soy estudiante o recién graduado\nb) Tengo experiencia laboral y quiero independizarme\nc) Ya tengo una habilidad o hobby que quiero monetizar\nd) No sé ni por dónde empezar",
   validacion: "Tienes una idea. Eso ya es más de lo que tiene la mayoría.\n\nAhora voy a ser directa: mi trabajo no es decirte que todo va a salir bien. Es ayudarte a ver con claridad si vale la pena seguir, y en qué condiciones.\n\nCuéntame tu idea — qué es, a quién le vendes y cómo harías plata. Con eso arrancamos el análisis.",
-  mvp: "Antes de construir nada, necesitamos saber si alguien realmente pagaría. Ese paso que más gente se salta es el que más errores y plata evita.\n\nLo bueno: se puede validar esta semana sin gastar casi nada.\n\n¿En qué punto estás?\n\na) Solo tengo la idea, no he hablado con nadie\nb) Hablé con algunas personas y hubo interés\nc) Ya tengo algo construido pero no tengo clientes\nd) Tengo clientes pero quiero validar si escala",
+  mvp: "¿Ya tienes una idea de negocio clara o todavía estás explorando opciones?\n\na) Tengo una idea específica y quiero saber si tiene mercado\nb) Tengo un producto o servicio y quiero entender cómo entrar al mercado\nc) Ya tengo algo funcionando pero quiero validar si puede crecer\nd) Todavía estoy buscando la idea",
   ventas: "Ya tienes algo para vender. Eso es enorme — la mayoría nunca llega hasta aquí.\n\nAhora viene la parte que más asusta: que alguien pague. La primera venta siempre da miedo. A todos nos dio.\n\n¿A quién le vendes principalmente?\n\na) A personas (familias, individuos, consumidor final)\nb) A empresas o negocios\nc) Al gobierno o sector público\nd) No tengo claro todavía",
   finanzas: "Este es uno de los temas más importantes y más ignorados. La mayoría de negocios no quiebran por falta de ventas — quiebran por no saber manejar la plata.\n\nVamos a ordenar eso, paso a paso.\n\n¿Cuál de estas situaciones describe mejor tu negocio ahora mismo?\n\na) Vendo pero siento que la plata desaparece\nb) No sé si estoy ganando o perdiendo realmente\nc) Mezclo la plata del negocio con la personal\nd) Quiero organizar todo desde el principio antes de arrancar",
   formalizacion: "Formalizar da susto, pero es la decisión que más abre puertas. Con un negocio informal puedes llegar hasta cierto punto — después el techo se vuelve muy bajo.\n\nVamos paso a paso, sin enredos.\n\n¿En qué punto estás con la formalización?\n\na) Estoy completamente informal, sin ningún registro\nb) Tengo RUT pero nada más\nc) Tengo registro mercantil pero quiero saber qué más necesito\nd) Quiero contratar empleados y no sé cómo",
@@ -702,6 +714,36 @@ function cerrarChat() {
   agenteActual = null; historial = [];
 }
 
+const AGENTE_NOMBRES = {
+  ideas: 'No sé qué negocio montar',
+  validacion: 'Tengo una idea, ¿será buena?',
+  mvp: '¿Cómo pruebo sin gastar todo?',
+  ventas: 'Ya tengo algo, ¿cómo vendo?',
+  finanzas: '¿Cómo hago que no se quiebre?',
+  formalizacion: '¿Cómo formalizo mi negocio?',
+  plan: 'Construye tu plan de negocio',
+  costos: '¿Cuánto me cuesta vender?',
+  bloqueo: 'Me bloqueé, ¿qué sigue?'
+};
+
+const TRANSFER_PATTERNS = [
+  { pattern: /agente 0?2/i, agente: 'validacion' },
+  { pattern: /agente 0?3/i, agente: 'mvp' },
+  { pattern: /agente 0?4/i, agente: 'ventas' },
+  { pattern: /agente 0?5/i, agente: 'finanzas' },
+  { pattern: /agente 0?6/i, agente: 'formalizacion' },
+  { pattern: /agente 0?7/i, agente: 'plan' },
+  { pattern: /agente 0?8/i, agente: 'costos' },
+  { pattern: /agente 0?9/i, agente: 'bloqueo' },
+];
+
+function detectarTransferencia(texto) {
+  for (const { pattern, agente } of TRANSFER_PATTERNS) {
+    if (pattern.test(texto) && agente !== agenteActual) return agente;
+  }
+  return null;
+}
+
 function agregarMensaje(rol, texto) {
   const cont = document.getElementById('mensajes');
   const div = document.createElement('div');
@@ -712,6 +754,19 @@ function agregarMensaje(rol, texto) {
   const burbuja = document.createElement('div');
   burbuja.className = 'burbuja';
   burbuja.innerHTML = '<p>' + texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>') + '</p>';
+
+  // Detectar si el agente recomienda otro agente y mostrar botón
+  if (rol === 'lau') {
+    const agenteDestino = detectarTransferencia(texto);
+    if (agenteDestino) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-transfer';
+      btn.innerHTML = 'Ir al Agente: ' + AGENTE_NOMBRES[agenteDestino] + ' →';
+      btn.onclick = () => abrirAgente(agenteDestino, null);
+      burbuja.appendChild(btn);
+    }
+  }
+
   div.appendChild(av); div.appendChild(burbuja);
   cont.appendChild(div); cont.scrollTop = cont.scrollHeight;
 }
